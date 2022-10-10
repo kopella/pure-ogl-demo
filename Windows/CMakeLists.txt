@@ -1,4 +1,4 @@
-add_executable(pure_ogl win_main.cc)
+add_executable(pure_ogl win_main.c)
 
 # external - OpenGL
 find_package(OpenGL REQUIRED)

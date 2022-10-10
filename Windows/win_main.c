@@ -1,7 +1,7 @@
 #include "win_main.h"
 
 static GLvoid ErrorBox(LPCSTR msg) {
-  MessageBox(nullptr, msg, "Error", MB_OK | MB_ICONEXCLAMATION);
+  MessageBox(NULL, msg, "Error", MB_OK | MB_ICONEXCLAMATION);
   exit(EXIT_FAILURE);
 }
 
@@ -18,12 +18,12 @@ int main() {
   GLuint shader_prog = MyOglLoadShader();
   GLuint v_array_obj = MyOglLoadVertex();
 
-  bool running = true;
+  boolean running = 1;
   while (running) {
     MSG msg;
     while (PeekMessage(&msg, 0, 0, 0, PM_REMOVE)) {
       if (msg.message == WM_QUIT) {
-        running = false;
+        running = 0;
       } else {
         TranslateMessage(&msg);
         DispatchMessage(&msg);
@@ -60,7 +60,7 @@ HWND MyCreateWnd(HINSTANCE h_inst) {
       .right = 960,
       .bottom = 540,
   };
-  AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, false);
+  AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, 0);
 
   HWND h_wnd = CreateWindow(wnd_class.lpszClassName, "Pure WGL Demo",
                             WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
@@ -131,157 +131,157 @@ PFNGLUNIFORM4FVPROC glUniform4fv;
 BOOL MyLoadOglFunc(GLvoid) {
   glAttachShader = (PFNGLATTACHSHADERPROC)wglGetProcAddress("glAttachShader");
   if (!glAttachShader) {
-    return false;
+    return 0;
   }
   glBindBuffer = (PFNGLBINDBUFFERPROC)wglGetProcAddress("glBindBuffer");
   if (!glBindBuffer) {
-    return false;
+    return 0;
   }
   glBindVertexArray =
       (PFNGLBINDVERTEXARRAYPROC)wglGetProcAddress("glBindVertexArray");
   if (!glBindVertexArray) {
-    return false;
+    return 0;
   }
   glBufferData = (PFNGLBUFFERDATAPROC)wglGetProcAddress("glBufferData");
   if (!glBufferData) {
-    return false;
+    return 0;
   }
   glCompileShader =
       (PFNGLCOMPILESHADERPROC)wglGetProcAddress("glCompileShader");
   if (!glCompileShader) {
-    return false;
+    return 0;
   }
   glCreateProgram =
       (PFNGLCREATEPROGRAMPROC)wglGetProcAddress("glCreateProgram");
   if (!glCreateProgram) {
-    return false;
+    return 0;
   }
   glCreateShader = (PFNGLCREATESHADERPROC)wglGetProcAddress("glCreateShader");
   if (!glCreateShader) {
-    return false;
+    return 0;
   }
   glDeleteBuffers =
       (PFNGLDELETEBUFFERSPROC)wglGetProcAddress("glDeleteBuffers");
   if (!glDeleteBuffers) {
-    return false;
+    return 0;
   }
   glDeleteProgram =
       (PFNGLDELETEPROGRAMPROC)wglGetProcAddress("glDeleteProgram");
   if (!glDeleteProgram) {
-    return false;
+    return 0;
   }
   glDeleteShader = (PFNGLDELETESHADERPROC)wglGetProcAddress("glDeleteShader");
   if (!glDeleteShader) {
-    return false;
+    return 0;
   }
   glDeleteVertexArrays =
       (PFNGLDELETEVERTEXARRAYSPROC)wglGetProcAddress("glDeleteVertexArrays");
   if (!glDeleteVertexArrays) {
-    return false;
+    return 0;
   }
   glDetachShader = (PFNGLDETACHSHADERPROC)wglGetProcAddress("glDetachShader");
   if (!glDetachShader) {
-    return false;
+    return 0;
   }
   glEnableVertexAttribArray =
       (PFNGLENABLEVERTEXATTRIBARRAYPROC)wglGetProcAddress(
           "glEnableVertexAttribArray");
   if (!glEnableVertexAttribArray) {
-    return false;
+    return 0;
   }
   glGenBuffers = (PFNGLGENBUFFERSPROC)wglGetProcAddress("glGenBuffers");
   if (!glGenBuffers) {
-    return false;
+    return 0;
   }
   glGenVertexArrays =
       (PFNGLGENVERTEXARRAYSPROC)wglGetProcAddress("glGenVertexArrays");
   if (!glGenVertexArrays) {
-    return false;
+    return 0;
   }
   glGetAttribLocation =
       (PFNGLGETATTRIBLOCATIONPROC)wglGetProcAddress("glGetAttribLocation");
   if (!glGetAttribLocation) {
-    return false;
+    return 0;
   }
   glGetProgramInfoLog =
       (PFNGLGETPROGRAMINFOLOGPROC)wglGetProcAddress("glGetProgramInfoLog");
   if (!glGetProgramInfoLog) {
-    return false;
+    return 0;
   }
   glGetProgramiv = (PFNGLGETPROGRAMIVPROC)wglGetProcAddress("glGetProgramiv");
   if (!glGetProgramiv) {
-    return false;
+    return 0;
   }
   glGetShaderInfoLog =
       (PFNGLGETSHADERINFOLOGPROC)wglGetProcAddress("glGetShaderInfoLog");
   if (!glGetShaderInfoLog) {
-    return false;
+    return 0;
   }
   glGetShaderiv = (PFNGLGETSHADERIVPROC)wglGetProcAddress("glGetShaderiv");
   if (!glGetShaderiv) {
-    return false;
+    return 0;
   }
   glLinkProgram = (PFNGLLINKPROGRAMPROC)wglGetProcAddress("glLinkProgram");
   if (!glLinkProgram) {
-    return false;
+    return 0;
   }
   glShaderSource = (PFNGLSHADERSOURCEPROC)wglGetProcAddress("glShaderSource");
   if (!glShaderSource) {
-    return false;
+    return 0;
   }
   glUseProgram = (PFNGLUSEPROGRAMPROC)wglGetProcAddress("glUseProgram");
   if (!glUseProgram) {
-    return false;
+    return 0;
   }
   glVertexAttribPointer =
       (PFNGLVERTEXATTRIBPOINTERPROC)wglGetProcAddress("glVertexAttribPointer");
   if (!glVertexAttribPointer) {
-    return false;
+    return 0;
   }
   glBindAttribLocation =
       (PFNGLBINDATTRIBLOCATIONPROC)wglGetProcAddress("glBindAttribLocation");
   if (!glBindAttribLocation) {
-    return false;
+    return 0;
   }
   glGetUniformLocation =
       (PFNGLGETUNIFORMLOCATIONPROC)wglGetProcAddress("glGetUniformLocation");
   if (!glGetUniformLocation) {
-    return false;
+    return 0;
   }
   glUniformMatrix4fv =
       (PFNGLUNIFORMMATRIX4FVPROC)wglGetProcAddress("glUniformMatrix4fv");
   if (!glUniformMatrix4fv) {
-    return false;
+    return 0;
   }
   glActiveTexture =
       (PFNGLACTIVETEXTUREPROC)wglGetProcAddress("glActiveTexture");
   if (!glActiveTexture) {
-    return false;
+    return 0;
   }
   glUniform1i = (PFNGLUNIFORM1IPROC)wglGetProcAddress("glUniform1i");
   if (!glUniform1i) {
-    return false;
+    return 0;
   }
   glGenerateMipmap =
       (PFNGLGENERATEMIPMAPPROC)wglGetProcAddress("glGenerateMipmap");
   if (!glGenerateMipmap) {
-    return false;
+    return 0;
   }
   glDisableVertexAttribArray =
       (PFNGLDISABLEVERTEXATTRIBARRAYPROC)wglGetProcAddress(
           "glDisableVertexAttribArray");
   if (!glDisableVertexAttribArray) {
-    return false;
+    return 0;
   }
   glUniform3fv = (PFNGLUNIFORM3FVPROC)wglGetProcAddress("glUniform3fv");
   if (!glUniform3fv) {
-    return false;
+    return 0;
   }
   glUniform4fv = (PFNGLUNIFORM4FVPROC)wglGetProcAddress("glUniform4fv");
   if (!glUniform4fv) {
-    return false;
+    return 0;
   }
-  return true;
+  return 1;
 }
 
 HGLRC MyInitOgl(HDC h_dc) {
@@ -369,11 +369,11 @@ GLuint MyOglLoadShader() {
       "}\n\0";
 
   GLuint v_shader = glCreateShader(GL_VERTEX_SHADER);
-  glShaderSource(v_shader, 1, &v_shader_src, nullptr);
+  glShaderSource(v_shader, 1, &v_shader_src, NULL);
   glCompileShader(v_shader);
 
   GLuint f_shader = glCreateShader(GL_FRAGMENT_SHADER);
-  glShaderSource(f_shader, 1, &f_shader_src, nullptr);
+  glShaderSource(f_shader, 1, &f_shader_src, NULL);
   glCompileShader(f_shader);
 
   GLuint shader_prog = glCreateProgram();
