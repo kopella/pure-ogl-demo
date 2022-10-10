@@ -84,4 +84,4 @@ PFNGLBINDBUFFERPROC glBindBuffer =
 
 ## 代码
 
-[pure-ogl-triangle-demo]()
+[pure-ogl-triangle-demo](https://github.com/kopella/pure-ogl-triangle-demo/blob/master/Windows/win_main.c)
