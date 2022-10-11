@@ -10,7 +10,7 @@ Windows 11, VS Code, CMake, Clang.
 
 ## 流程
 
-OpenGL 的初始化流程可分为两部分。第一部分是为 OpenGL 创建上下文(Context)。第二部分是加载需要使用的 OpenGL 函数。
+OpenGL 的初始化流程可分为两部分：第一部分是为 OpenGL 创建上下文(Context)，第二部分是加载需要使用的 OpenGL 函数。
 
 ### 为 OpenGL 创建上下文 (Context)
 

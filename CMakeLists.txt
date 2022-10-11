@@ -4,3 +4,7 @@ project(pure_ogl VERSION 0.1.0)
 if(WIN32)
     add_subdirectory(Windows)
 endif(WIN32)
+
+if(UNIX)
+    add_subdirectory(Linux)
+endif(UNIX)
