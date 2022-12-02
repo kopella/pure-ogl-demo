@@ -1,3 +1,6 @@
+#include "linux_main.h"
 
-
-int main() { return 0; }
+int main() {
+  printf("Hello Linux!\n");
+  return 0;
+}
