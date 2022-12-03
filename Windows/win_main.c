@@ -5,19 +5,17 @@ static GLvoid ErrorBox(LPCSTR msg) {
   exit(EXIT_FAILURE);
 }
 
-int main() {
-  HINSTANCE h_wgl_inst = GetModuleHandle(0);
-  HWND h_wgl_wnd = MyCreateWnd(h_wgl_inst);
-  HDC h_wgl_dc = GetDC(h_wgl_wnd);
+int main(int argc, char* argv[]) {
+  HINSTANCE h_inst = GetModuleHandle(0);
 
-  HGLRC h_wgl_rc = MyInitOgl(h_wgl_dc);
+  HWND h_wnd = create_window(h_inst);
+  HDC h_dc = GetDC(h_wnd);
 
-  ShowWindow(h_wgl_wnd, SW_SHOW);
-  UpdateWindow(h_wgl_wnd);
+  HGLRC h_rc = create_context(h_dc);
+  get_functions();
 
-  GLuint shader_prog = MyOglLoadShader();
-  GLuint v_array_obj = MyOglLoadVertex();
-
+  ShowWindow(h_wnd, SW_SHOW);
+  UpdateWindow(h_wnd);
   boolean running = 1;
   while (running) {
     MSG msg;
@@ -30,26 +28,22 @@ int main() {
       }
     }
 
-    glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    MyOglDrawScene(shader_prog, v_array_obj);
-
-    SwapBuffers(h_wgl_dc);
+    draw_scene();
+    SwapBuffers(h_dc);
   }
 
-  MyKillWgl(h_wgl_inst, h_wgl_wnd, h_wgl_dc, h_wgl_rc);
-  return 0;
+  delete_context(h_dc, h_rc);
+  destory_window(h_inst, h_wnd, h_dc);
 }
 
-HWND MyCreateWnd(HINSTANCE h_inst) {
+HWND create_window(HINSTANCE h_inst) {
   WNDCLASS wnd_class = {
       .style = CS_HREDRAW | CS_VREDRAW,
-      .lpfnWndProc = MyWndCallback,
+      .lpfnWndProc = window_callback,
       .hInstance = h_inst,
       .hCursor = LoadCursor(0, IDC_ARROW),
       .hbrBackground = 0,
-      .lpszClassName = "Pure WGL Demo",
+      .lpszClassName = "Pure OpenGL Demo",
   };
 
   if (!RegisterClass(&wnd_class)) {
@@ -62,10 +56,10 @@ HWND MyCreateWnd(HINSTANCE h_inst) {
   };
   AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, 0);
 
-  HWND h_wnd = CreateWindow(wnd_class.lpszClassName, "Pure WGL Demo",
-                            WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
-                            rect.right - rect.left, rect.bottom - rect.top, 0,
-                            0, h_inst, 0);
+  HWND h_wnd = CreateWindow(
+      wnd_class.lpszClassName, "Pure OpenGL Demo", WS_OVERLAPPEDWINDOW,
+      CW_USEDEFAULT, CW_USEDEFAULT, rect.right - rect.left,
+      rect.bottom - rect.top, 0, 0, h_inst, 0);
 
   if (!h_wnd) {
     ErrorBox("Failed to create window.");
@@ -73,9 +67,8 @@ HWND MyCreateWnd(HINSTANCE h_inst) {
 
   return h_wnd;
 }
-
-LRESULT CALLBACK MyWndCallback(HWND h_wnd, UINT msg, WPARAM w_param,
-                               LPARAM l_param) {
+LRESULT CALLBACK
+window_callback(HWND h_wnd, UINT msg, WPARAM w_param, LPARAM l_param) {
   LRESULT result = 0;
 
   switch (msg) {
@@ -84,14 +77,58 @@ LRESULT CALLBACK MyWndCallback(HWND h_wnd, UINT msg, WPARAM w_param,
       PostQuitMessage(0);
       break;
     case WM_SIZE:
-      MyReSizeGLScene(LOWORD(l_param), HIWORD(l_param));
+      // MyReSizeGLScene(LOWORD(l_param), HIWORD(l_param));
       break;
     default:
-      result = DefWindowProcA(h_wnd, msg, w_param, l_param);
+      result = DefWindowProc(h_wnd, msg, w_param, l_param);
       break;
   }
 
   return result;
+}
+
+void destory_window(HINSTANCE h_inst, HWND h_wnd, HDC h_dc) {
+  if (!ReleaseDC(h_wnd, h_dc)) {
+    ErrorBox("Failed to release the device context.");
+  }
+  if (!DestroyWindow(h_wnd)) {
+    ErrorBox("Failed to destroy the window.");
+  }
+  if (!UnregisterClass("Pure OpenGL Demo", h_inst)) {
+    ErrorBox("Failed to unregister the class.");
+  }
+}
+
+HGLRC create_context(HDC h_dc) {
+  PIXELFORMATDESCRIPTOR
+  des_pf = {
+      .nSize = sizeof(des_pf),
+      .nVersion = 1,
+      .dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER,
+      .iPixelType = PFD_TYPE_RGBA,
+      .cColorBits = 32,
+      .cAlphaBits = 8,
+      .cDepthBits = 24,
+      .cStencilBits = 8,
+      .iLayerType = PFD_MAIN_PLANE,
+  };
+
+  int n_pf = ChoosePixelFormat(h_dc, &des_pf);
+  if (!n_pf) {
+    ErrorBox("Failed to find a suitable pixel format.");
+  }
+  if (!SetPixelFormat(h_dc, n_pf, &des_pf)) {
+    ErrorBox("Failed to set the pixel format.");
+  }
+  HGLRC h_rc = wglCreateContext(h_dc);
+  if (!h_rc) {
+    ErrorBox("Failed to create a OpenGL rendering context.");
+  }
+  if (!wglMakeCurrent(h_dc, h_rc)) {
+    ErrorBox("Failed to activate the OpenGL rendering context.");
+  }
+
+  return h_rc;
 }
 
 PFNGLATTACHSHADERPROC glAttachShader;
@@ -128,238 +165,190 @@ PFNGLDISABLEVERTEXATTRIBARRAYPROC glDisableVertexAttribArray;
 PFNGLUNIFORM3FVPROC glUniform3fv;
 PFNGLUNIFORM4FVPROC glUniform4fv;
 
-BOOL MyLoadOglFunc(GLvoid) {
+void get_functions() {
   glAttachShader = (PFNGLATTACHSHADERPROC)wglGetProcAddress("glAttachShader");
   if (!glAttachShader) {
-    return 0;
+    ErrorBox("Failed to get functions.");
   }
   glBindBuffer = (PFNGLBINDBUFFERPROC)wglGetProcAddress("glBindBuffer");
   if (!glBindBuffer) {
-    return 0;
+    ErrorBox("Failed to get functions.");
   }
   glBindVertexArray =
       (PFNGLBINDVERTEXARRAYPROC)wglGetProcAddress("glBindVertexArray");
   if (!glBindVertexArray) {
-    return 0;
+    ErrorBox("Failed to get functions.");
   }
   glBufferData = (PFNGLBUFFERDATAPROC)wglGetProcAddress("glBufferData");
   if (!glBufferData) {
-    return 0;
+    ErrorBox("Failed to get functions.");
   }
   glCompileShader =
       (PFNGLCOMPILESHADERPROC)wglGetProcAddress("glCompileShader");
   if (!glCompileShader) {
-    return 0;
+    ErrorBox("Failed to get functions.");
   }
   glCreateProgram =
       (PFNGLCREATEPROGRAMPROC)wglGetProcAddress("glCreateProgram");
   if (!glCreateProgram) {
-    return 0;
+    ErrorBox("Failed to get functions.");
   }
   glCreateShader = (PFNGLCREATESHADERPROC)wglGetProcAddress("glCreateShader");
   if (!glCreateShader) {
-    return 0;
+    ErrorBox("Failed to get functions.");
   }
   glDeleteBuffers =
       (PFNGLDELETEBUFFERSPROC)wglGetProcAddress("glDeleteBuffers");
   if (!glDeleteBuffers) {
-    return 0;
+    ErrorBox("Failed to get functions.");
   }
   glDeleteProgram =
       (PFNGLDELETEPROGRAMPROC)wglGetProcAddress("glDeleteProgram");
   if (!glDeleteProgram) {
-    return 0;
+    ErrorBox("Failed to get functions.");
   }
   glDeleteShader = (PFNGLDELETESHADERPROC)wglGetProcAddress("glDeleteShader");
   if (!glDeleteShader) {
-    return 0;
+    ErrorBox("Failed to get functions.");
   }
   glDeleteVertexArrays =
       (PFNGLDELETEVERTEXARRAYSPROC)wglGetProcAddress("glDeleteVertexArrays");
   if (!glDeleteVertexArrays) {
-    return 0;
+    ErrorBox("Failed to get functions.");
   }
   glDetachShader = (PFNGLDETACHSHADERPROC)wglGetProcAddress("glDetachShader");
   if (!glDetachShader) {
-    return 0;
+    ErrorBox("Failed to get functions.");
   }
   glEnableVertexAttribArray =
       (PFNGLENABLEVERTEXATTRIBARRAYPROC)wglGetProcAddress(
           "glEnableVertexAttribArray");
   if (!glEnableVertexAttribArray) {
-    return 0;
+    ErrorBox("Failed to get functions.");
   }
   glGenBuffers = (PFNGLGENBUFFERSPROC)wglGetProcAddress("glGenBuffers");
   if (!glGenBuffers) {
-    return 0;
+    ErrorBox("Failed to get functions.");
   }
   glGenVertexArrays =
       (PFNGLGENVERTEXARRAYSPROC)wglGetProcAddress("glGenVertexArrays");
   if (!glGenVertexArrays) {
-    return 0;
+    ErrorBox("Failed to get functions.");
   }
   glGetAttribLocation =
       (PFNGLGETATTRIBLOCATIONPROC)wglGetProcAddress("glGetAttribLocation");
   if (!glGetAttribLocation) {
-    return 0;
+    ErrorBox("Failed to get functions.");
   }
   glGetProgramInfoLog =
       (PFNGLGETPROGRAMINFOLOGPROC)wglGetProcAddress("glGetProgramInfoLog");
   if (!glGetProgramInfoLog) {
-    return 0;
+    ErrorBox("Failed to get functions.");
   }
   glGetProgramiv = (PFNGLGETPROGRAMIVPROC)wglGetProcAddress("glGetProgramiv");
   if (!glGetProgramiv) {
-    return 0;
+    ErrorBox("Failed to get functions.");
   }
   glGetShaderInfoLog =
       (PFNGLGETSHADERINFOLOGPROC)wglGetProcAddress("glGetShaderInfoLog");
   if (!glGetShaderInfoLog) {
-    return 0;
+    ErrorBox("Failed to get functions.");
   }
   glGetShaderiv = (PFNGLGETSHADERIVPROC)wglGetProcAddress("glGetShaderiv");
   if (!glGetShaderiv) {
-    return 0;
+    ErrorBox("Failed to get functions.");
   }
   glLinkProgram = (PFNGLLINKPROGRAMPROC)wglGetProcAddress("glLinkProgram");
   if (!glLinkProgram) {
-    return 0;
+    ErrorBox("Failed to get functions.");
   }
   glShaderSource = (PFNGLSHADERSOURCEPROC)wglGetProcAddress("glShaderSource");
   if (!glShaderSource) {
-    return 0;
+    ErrorBox("Failed to get functions.");
   }
   glUseProgram = (PFNGLUSEPROGRAMPROC)wglGetProcAddress("glUseProgram");
   if (!glUseProgram) {
-    return 0;
+    ErrorBox("Failed to get functions.");
   }
   glVertexAttribPointer =
       (PFNGLVERTEXATTRIBPOINTERPROC)wglGetProcAddress("glVertexAttribPointer");
   if (!glVertexAttribPointer) {
-    return 0;
+    ErrorBox("Failed to get functions.");
   }
   glBindAttribLocation =
       (PFNGLBINDATTRIBLOCATIONPROC)wglGetProcAddress("glBindAttribLocation");
   if (!glBindAttribLocation) {
-    return 0;
+    ErrorBox("Failed to get functions.");
   }
   glGetUniformLocation =
       (PFNGLGETUNIFORMLOCATIONPROC)wglGetProcAddress("glGetUniformLocation");
   if (!glGetUniformLocation) {
-    return 0;
+    ErrorBox("Failed to get functions.");
   }
   glUniformMatrix4fv =
       (PFNGLUNIFORMMATRIX4FVPROC)wglGetProcAddress("glUniformMatrix4fv");
   if (!glUniformMatrix4fv) {
-    return 0;
+    ErrorBox("Failed to get functions.");
   }
   glActiveTexture =
       (PFNGLACTIVETEXTUREPROC)wglGetProcAddress("glActiveTexture");
   if (!glActiveTexture) {
-    return 0;
+    ErrorBox("Failed to get functions.");
   }
   glUniform1i = (PFNGLUNIFORM1IPROC)wglGetProcAddress("glUniform1i");
   if (!glUniform1i) {
-    return 0;
+    ErrorBox("Failed to get functions.");
   }
   glGenerateMipmap =
       (PFNGLGENERATEMIPMAPPROC)wglGetProcAddress("glGenerateMipmap");
   if (!glGenerateMipmap) {
-    return 0;
+    ErrorBox("Failed to get functions.");
   }
   glDisableVertexAttribArray =
       (PFNGLDISABLEVERTEXATTRIBARRAYPROC)wglGetProcAddress(
           "glDisableVertexAttribArray");
   if (!glDisableVertexAttribArray) {
-    return 0;
+    ErrorBox("Failed to get functions.");
   }
   glUniform3fv = (PFNGLUNIFORM3FVPROC)wglGetProcAddress("glUniform3fv");
   if (!glUniform3fv) {
-    return 0;
+    ErrorBox("Failed to get functions.");
   }
   glUniform4fv = (PFNGLUNIFORM4FVPROC)wglGetProcAddress("glUniform4fv");
   if (!glUniform4fv) {
-    return 0;
+    ErrorBox("Failed to get functions.");
   }
-  return 1;
 }
 
-HGLRC MyInitOgl(HDC h_dc) {
-  PIXELFORMATDESCRIPTOR
-  des_pf = {
-      .nSize = sizeof(des_pf),
-      .nVersion = 1,
-      .dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER,
-      .iPixelType = PFD_TYPE_RGBA,
-      .cColorBits = 32,
-      .cAlphaBits = 8,
-      .cDepthBits = 24,
-      .cStencilBits = 8,
-      .iLayerType = PFD_MAIN_PLANE,
-  };
-
-  int n_pf = ChoosePixelFormat(h_dc, &des_pf);
-  if (!n_pf) {
-    ErrorBox("Failed to find a suitable pixel format.");
-  }
-  if (!SetPixelFormat(h_dc, n_pf, &des_pf)) {
-    ErrorBox("Failed to set the pixel format.");
-  }
-  HGLRC h_rc = wglCreateContext(h_dc);
-  if (!h_rc) {
-    ErrorBox("Failed to create a OpenGL rendering context.");
-  }
-  if (!wglMakeCurrent(h_dc, h_rc)) {
-    ErrorBox("Failed to activate the OpenGL rendering context.");
-  }
-  if (!MyLoadOglFunc()) {
-    ErrorBox("Failed to load OpenGL's function.");
-  }
-
-  return h_rc;
-}
-
-GLvoid MyKillWgl(HINSTANCE h_inst, HWND h_wnd, HDC h_dc, HGLRC h_rc) {
+void delete_context(HDC h_dc, HGLRC h_rc) {
   if (!wglMakeCurrent(h_dc, 0)) {
     ErrorBox("Failed to detach the rendering context.");
   }
   if (!wglDeleteContext(h_rc)) {
     ErrorBox("Failed to delete the rendering context.");
   }
-  if (!ReleaseDC(h_wnd, h_dc)) {
-    ErrorBox("Failed to release the device context.");
-  }
-  if (!DestroyWindow(h_wnd)) {
-    ErrorBox("Failed to destroy the window.");
-  }
-  if (!UnregisterClass("Pure WGL Demo", h_inst)) {
-    ErrorBox("Failed to unregister the class.");
-  }
 }
 
-GLvoid MyReSizeGLScene(GLsizei width, GLsizei height) {
-  glViewport(0, 0, width, height);
+void draw_scene() {
+  glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+  GLuint shader_prog = load_shader();
+  GLuint v_array_obj = load_vertex();
+
+  glUseProgram(shader_prog);
+  glBindVertexArray(v_array_obj);
+  glDrawArrays(GL_TRIANGLES, 0, 3);
 }
 
-#define GL_ARRAY_BUFFER 0x8892
-#define GL_STATIC_DRAW 0x88E4
-#define GL_FRAGMENT_SHADER 0x8B30
-#define GL_VERTEX_SHADER 0x8B31
-#define GL_COMPILE_STATUS 0x8B81
-#define GL_LINK_STATUS 0x8B82
-#define GL_INFO_LOG_LENGTH 0x8B84
-#define GL_TEXTURE0 0x84C0
-#define GL_BGRA 0x80E1
-#define GL_ELEMENT_ARRAY_BUFFER 0x8893
-
-GLuint MyOglLoadShader() {
+GLuint load_shader() {
   const char* v_shader_src =
       "#version 330 core\n"
       "layout (location = 0) in vec3 aPos;\n"
       "void main()\n"
       "{\n"
       "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-      "}\0";
+      "}\n\0";
   const char* f_shader_src =
       "#version 330 core\n"
       "out vec4 FragColor;\n"
@@ -383,11 +372,13 @@ GLuint MyOglLoadShader() {
 
   glDeleteShader(v_shader);
   glDeleteShader(f_shader);
+  glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   return shader_prog;
 }
 
-GLuint MyOglLoadVertex() {
+GLuint load_vertex() {
   float vertices[] = {
       -0.5f, -0.5f, 0.0f,  // left
       0.5f,  -0.5f, 0.0f,  // right
@@ -411,10 +402,4 @@ GLuint MyOglLoadVertex() {
   glBindVertexArray(0);
 
   return v_array_obj;
-}
-
-GLvoid MyOglDrawScene(GLuint shader_prog, GLuint v_array_obj) {
-  glUseProgram(shader_prog);
-  glBindVertexArray(v_array_obj);
-  glDrawArrays(GL_TRIANGLES, 0, 3);
 }
