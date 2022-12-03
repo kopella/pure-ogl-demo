@@ -1,8 +1,6 @@
-add_executable(pure_ogl win_main.c)
-
-# external - OpenGL
-find_package(OpenGL REQUIRED)
-message(STATUS "OPENGL_FOUND: ${OPENGL_FOUND}")
+add_executable(pure_ogl win_main.c win_ogl.c)
 
 target_link_libraries(pure_ogl
-    OpenGL::GL)
+    OpenGL::GL
+    ogl_gfx
+)
