@@ -1,7 +1,7 @@
 #ifndef __OGL_GFX_H__
 #define __OGL_GFX_H__
 
-#include <GL/gl.h>
+#include <ogl_func.h>
 
 /* Operate OpenGL */
 void draw_scene();
