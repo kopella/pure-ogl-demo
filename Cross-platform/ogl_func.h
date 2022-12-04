@@ -12,14 +12,14 @@
 #error "Unknown compiler"
 #endif
 
-#include <gl/gl.h>
+#include <GL/gl.h>
 
 /* OpenGL functions type defines */
 typedef GLvoid(APICALL* PFNGLATTACHSHADERPROC)(GLuint program, GLuint shader);
 typedef GLvoid(APICALL* PFNGLBINDBUFFERPROC)(GLenum target, GLuint buffer);
 typedef GLvoid(APICALL* PFNGLBINDVERTEXARRAYPROC)(GLuint array);
 typedef GLvoid(APICALL* PFNGLBUFFERDATAPROC)(
-    GLenum target, ptrdiff_t size, const GLvoid* data, GLenum usage);
+    GLenum target, GLsizeiptr size, const GLvoid* data, GLenum usage);
 typedef GLvoid(APICALL* PFNGLCOMPILESHADERPROC)(GLuint shader);
 typedef GLuint(APICALL* PFNGLCREATEPROGRAMPROC)(GLvoid);
 typedef GLuint(APICALL* PFNGLCREATESHADERPROC)(GLenum type);
@@ -45,7 +45,8 @@ typedef GLvoid(APICALL* PFNGLGETSHADERIVPROC)(
     GLuint shader, GLenum pname, GLint* params);
 typedef GLvoid(APICALL* PFNGLLINKPROGRAMPROC)(GLuint program);
 typedef GLvoid(APICALL* PFNGLSHADERSOURCEPROC)(
-    GLuint shader, GLsizei count, const char** string, const GLint* length);
+    GLuint shader, GLsizei count, const GLchar* const* string,
+    const GLint* length);
 typedef GLvoid(APICALL* PFNGLUSEPROGRAMPROC)(GLuint program);
 typedef GLvoid(APICALL* PFNGLVERTEXATTRIBPOINTERPROC)(
     GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride,
@@ -93,7 +94,7 @@ extern PFNGLVERTEXATTRIBPOINTERPROC glVertexAttribPointer;
 extern PFNGLBINDATTRIBLOCATIONPROC glBindAttribLocation;
 extern PFNGLGETUNIFORMLOCATIONPROC glGetUniformLocation;
 extern PFNGLUNIFORMMATRIX4FVPROC glUniformMatrix4fv;
-extern PFNGLACTIVETEXTUREPROC glActiveTexture;
+// extern PFNGLACTIVETEXTUREPROC glActiveTexture;
 extern PFNGLUNIFORM1IPROC glUniform1i;
 extern PFNGLGENERATEMIPMAPPROC glGenerateMipmap;
 extern PFNGLDISABLEVERTEXATTRIBARRAYPROC glDisableVertexAttribArray;

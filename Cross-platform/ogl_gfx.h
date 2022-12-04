@@ -11,7 +11,7 @@
 #error "Unknown compiler"
 #endif
 
-#include <gl/gl.h>
+#include <GL/gl.h>
 
 /* Operate OpenGL */
 void draw_scene();

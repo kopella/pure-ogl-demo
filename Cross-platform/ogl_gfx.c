@@ -30,11 +30,11 @@ GLuint load_shader() {
       "}\n\0";
 
   GLuint v_shader = glCreateShader(GL_VERTEX_SHADER);
-  glShaderSource(v_shader, 1, &v_shader_src, NULL);
+  glShaderSource(v_shader, 1, &v_shader_src, 0);
   glCompileShader(v_shader);
 
   GLuint f_shader = glCreateShader(GL_FRAGMENT_SHADER);
-  glShaderSource(f_shader, 1, &f_shader_src, NULL);
+  glShaderSource(f_shader, 1, &f_shader_src, 0);
   glCompileShader(f_shader);
 
   GLuint shader_prog = glCreateProgram();
