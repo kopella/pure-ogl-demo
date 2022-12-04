@@ -1,8 +1,12 @@
 #ifndef __OGL_FUNC_H__
 #define __OGL_FUNC_H__
 
-#if defined(_WIN32)
-#include <windows.h>
+#if defined(_WIN32) && !defined(APIENTRY) && !defined(__CYGWIN__) && \
+    !defined(__SCITECH_SNAP__)
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN 1
+#endif
+#include <Windows.h>
 #endif
 
 #include <GL/gl.h>
