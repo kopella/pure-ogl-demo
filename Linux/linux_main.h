@@ -1,11 +1,11 @@
 #ifndef __LINUX_MAIN_H__
 #define __LINUX_MAIN_H__
-#include <GL/glx.h>
+#include <X11/Xlib.h>
 
 /* Create and destory platform window */
 // TODO: Functions about Create and destory platform window in Linux.
-void create_window();
+Window create_window(Display* display);
 
-void destory_window();
+void destory_window(Display* display, Window window);
 
 #endif
