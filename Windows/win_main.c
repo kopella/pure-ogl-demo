@@ -54,8 +54,8 @@ HWND create_window(HINSTANCE h_inst) {
   }
 
   RECT rect = {
-      .right = 960,
-      .bottom = 540,
+      .right = 640,
+      .bottom = 480,
   };
   AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, 0);
 
