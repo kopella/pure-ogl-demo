@@ -6,7 +6,6 @@
 #include <GL/glxext.h>
 
 /* Initialize and finalize OpenGL */
-// TODO: Functions about initialize and finalize OpenGL in Linux.
 void get_functions();
 
 GLXContext create_context(Display* display, Window window, int screen);
