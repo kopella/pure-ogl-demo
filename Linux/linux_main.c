@@ -4,7 +4,11 @@
 
 int main(int argc, char* argv[]) {
   Display* display = XOpenDisplay(NULL);
-  Window window = create_window(display);
+
+  int screen;
+  Window window = create_window(display, &screen);
+
+  GLXContext context = create_context(display, window, screen);
 
   XMapWindow(display, window);
 
@@ -21,6 +25,8 @@ int main(int argc, char* argv[]) {
     switch (e.type) {
       case Expose:
         // Render();
+        draw_scene();
+        glXSwapBuffers(display, window);
         break;
       case ClientMessage:
         running = 0;
@@ -36,17 +42,17 @@ int main(int argc, char* argv[]) {
   return 0;
 }
 
-Window create_window(Display* display) {
-  int screen = DefaultScreen(display);
+Window create_window(Display* display, int* screen) {
+  *screen = DefaultScreen(display);
   int width = 640;
   int height = 480;
-  int screen_width = DisplayWidth(display, screen);
-  int screen_height = DisplayHeight(display, screen);
+  int screen_width = DisplayWidth(display, *screen);
+  int screen_height = DisplayHeight(display, *screen);
 
   return XCreateWindow(
-      display, XRootWindow(display, screen), (screen_width - width) / 2,
+      display, XRootWindow(display, *screen), (screen_width - width) / 2,
       (screen_height - height) / 2, width, height, 0, CopyFromParent,
-      InputOutput, DefaultVisual(display, screen), 0, 0);
+      InputOutput, DefaultVisual(display, *screen), 0, 0);
 }
 
 void destory_window(Display* display, Window window) {
