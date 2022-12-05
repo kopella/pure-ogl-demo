@@ -1,7 +1,7 @@
-add_executable(pure_ogl linux_main.c)
+add_executable(pure_ogl linux_main.c linux_ogl.c)
 
 # external - OpenGL
-set(OpenGL_GL_PREFERENCE "GLVND")
+set(OpenGL_GL_PREFERENCE "LEGACY")
 find_package(OpenGL REQUIRED)
 message(STATUS "OPENGL_FOUND: ${OPENGL_FOUND}")
 

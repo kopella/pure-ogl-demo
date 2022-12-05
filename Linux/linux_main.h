@@ -4,7 +4,7 @@
 
 /* Create and destory platform window */
 // TODO: Functions about Create and destory platform window in Linux.
-Window create_window(Display* display);
+Window create_window(Display* display, int* screen);
 
 void destory_window(Display* display, Window window);
 
