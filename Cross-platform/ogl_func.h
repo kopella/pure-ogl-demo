@@ -7,8 +7,6 @@
 #define WIN32_LEAN_AND_MEAN 1
 #endif
 #include <Windows.h>
-
-extern PFNGLACTIVETEXTUREPROC glActiveTexture;
 #endif
 
 #include <GL/gl.h>
