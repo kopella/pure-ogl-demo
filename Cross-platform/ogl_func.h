@@ -1,12 +1,12 @@
 #ifndef __OGL_FUNC_H__
 #define __OGL_FUNC_H__
 
+#if defined(_WIN32)
+#include <windows.h>
+#endif
+
 #include <GL/gl.h>
 #include <GL/glext.h>
-
-#if defined(_WIN32)
-// ...
-#endif
 
 /* OpenGL functions */
 
