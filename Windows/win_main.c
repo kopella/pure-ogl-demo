@@ -1,11 +1,8 @@
 #include "win_main.h"
 #include "win_ogl.h"
-#include "ogl_gfx.h"
 
-static void ErrorBox(LPCSTR msg) {
-  MessageBox(NULL, msg, "Error", MB_OK | MB_ICONEXCLAMATION);
-  exit(EXIT_FAILURE);
-}
+#include "ogl_gfx.h"
+#include "utils.h"
 
 int main(int argc, char* argv[]) {
   HINSTANCE h_inst = GetModuleHandle(0);
@@ -37,7 +34,12 @@ int main(int argc, char* argv[]) {
 
   delete_context(h_dc, h_rc);
   destory_window(h_inst, h_wnd, h_dc);
+
+  return 0;
 }
+
+LRESULT CALLBACK
+window_callback(HWND h_wnd, UINT msg, WPARAM w_param, LPARAM l_param);
 
 HWND create_window(HINSTANCE h_inst) {
   WNDCLASS wnd_class = {
@@ -50,7 +52,7 @@ HWND create_window(HINSTANCE h_inst) {
   };
 
   if (!RegisterClass(&wnd_class)) {
-    ErrorBox("Failed to register window class.");
+    error_to_console("Failed to register window class.");
   }
 
   RECT rect = {
@@ -65,11 +67,13 @@ HWND create_window(HINSTANCE h_inst) {
       rect.bottom - rect.top, 0, 0, h_inst, 0);
 
   if (!h_wnd) {
-    ErrorBox("Failed to create window.");
+    error_to_console("Failed to create window.");
   }
 
+  info_to_console("Window created successfully.");
   return h_wnd;
 }
+
 LRESULT CALLBACK
 window_callback(HWND h_wnd, UINT msg, WPARAM w_param, LPARAM l_param) {
   LRESULT result = 0;
@@ -92,12 +96,14 @@ window_callback(HWND h_wnd, UINT msg, WPARAM w_param, LPARAM l_param) {
 
 void destory_window(HINSTANCE h_inst, HWND h_wnd, HDC h_dc) {
   if (!ReleaseDC(h_wnd, h_dc)) {
-    ErrorBox("Failed to release the device context.");
+    error_to_console("Failed to release the device context.");
   }
   if (!DestroyWindow(h_wnd)) {
-    ErrorBox("Failed to destroy the window.");
+    error_to_console("Failed to destroy the window.");
   }
   if (!UnregisterClass("Pure OpenGL Demo", h_inst)) {
-    ErrorBox("Failed to unregister the class.");
+    error_to_console("Failed to unregister the class.");
   }
+
+  info_to_console("Window destroyed successfully.");
 }
