@@ -48,157 +48,92 @@ PFNGLUNIFORM4FVPROC glUniform4fv;
 PFNGLACTIVETEXTUREPROC glActiveTexture;
 PFNGLGENERATEMIPMAPPROC glGenerateMipmap;
 
-void get_functions() {
+int get_functions() {
   glAttachShader = (PFNGLATTACHSHADERPROC)wglGetProcAddress("glAttachShader");
-  if (!glAttachShader) {
-    error_to_console("Failed to get glAttachShader function.");
-  }
+  if (!glAttachShader) return 0;
   glBindBuffer = (PFNGLBINDBUFFERPROC)wglGetProcAddress("glBindBuffer");
-  if (!glBindBuffer) {
-    error_to_console("Failed to get functions.");
-  }
+  if (!glBindBuffer) return 0;
   glBindVertexArray =
       (PFNGLBINDVERTEXARRAYPROC)wglGetProcAddress("glBindVertexArray");
-  if (!glBindVertexArray) {
-    error_to_console("Failed to get functions.");
-  }
+  if (!glBindVertexArray) return 0;
   glBufferData = (PFNGLBUFFERDATAPROC)wglGetProcAddress("glBufferData");
-  if (!glBufferData) {
-    error_to_console("Failed to get functions.");
-  }
+  if (!glBufferData) return 0;
   glCompileShader =
       (PFNGLCOMPILESHADERPROC)wglGetProcAddress("glCompileShader");
-  if (!glCompileShader) {
-    error_to_console("Failed to get functions.");
-  }
+  if (!glCompileShader) return 0;
   glCreateProgram =
       (PFNGLCREATEPROGRAMPROC)wglGetProcAddress("glCreateProgram");
-  if (!glCreateProgram) {
-    error_to_console("Failed to get functions.");
-  }
+  if (!glCreateProgram) return 0;
   glCreateShader = (PFNGLCREATESHADERPROC)wglGetProcAddress("glCreateShader");
-  if (!glCreateShader) {
-    error_to_console("Failed to get functions.");
-  }
+  if (!glCreateShader) return 0;
   glDeleteBuffers =
       (PFNGLDELETEBUFFERSPROC)wglGetProcAddress("glDeleteBuffers");
-  if (!glDeleteBuffers) {
-    error_to_console("Failed to get functions.");
-  }
+  if (!glDeleteBuffers) return 0;
   glDeleteProgram =
       (PFNGLDELETEPROGRAMPROC)wglGetProcAddress("glDeleteProgram");
-  if (!glDeleteProgram) {
-    error_to_console("Failed to get functions.");
-  }
+  if (!glDeleteProgram) return 0;
   glDeleteShader = (PFNGLDELETESHADERPROC)wglGetProcAddress("glDeleteShader");
-  if (!glDeleteShader) {
-    error_to_console("Failed to get functions.");
-  }
+  if (!glDeleteShader) return 0;
   glDeleteVertexArrays =
       (PFNGLDELETEVERTEXARRAYSPROC)wglGetProcAddress("glDeleteVertexArrays");
-  if (!glDeleteVertexArrays) {
-    error_to_console("Failed to get functions.");
-  }
+  if (!glDeleteVertexArrays) return 0;
   glDetachShader = (PFNGLDETACHSHADERPROC)wglGetProcAddress("glDetachShader");
-  if (!glDetachShader) {
-    error_to_console("Failed to get functions.");
-  }
+  if (!glDetachShader) return 0;
   glEnableVertexAttribArray =
       (PFNGLENABLEVERTEXATTRIBARRAYPROC)wglGetProcAddress(
           "glEnableVertexAttribArray");
-  if (!glEnableVertexAttribArray) {
-    error_to_console("Failed to get functions.");
-  }
+  if (!glEnableVertexAttribArray) return 0;
   glGenBuffers = (PFNGLGENBUFFERSPROC)wglGetProcAddress("glGenBuffers");
-  if (!glGenBuffers) {
-    error_to_console("Failed to get functions.");
-  }
+  if (!glGenBuffers) return 0;
   glGenVertexArrays =
       (PFNGLGENVERTEXARRAYSPROC)wglGetProcAddress("glGenVertexArrays");
-  if (!glGenVertexArrays) {
-    error_to_console("Failed to get functions.");
-  }
+  if (!glGenVertexArrays) return 0;
   glGetAttribLocation =
       (PFNGLGETATTRIBLOCATIONPROC)wglGetProcAddress("glGetAttribLocation");
-  if (!glGetAttribLocation) {
-    error_to_console("Failed to get functions.");
-  }
+  if (!glGetAttribLocation) return 0;
   glGetProgramInfoLog =
       (PFNGLGETPROGRAMINFOLOGPROC)wglGetProcAddress("glGetProgramInfoLog");
-  if (!glGetProgramInfoLog) {
-    error_to_console("Failed to get functions.");
-  }
+  if (!glGetProgramInfoLog) return 0;
   glGetProgramiv = (PFNGLGETPROGRAMIVPROC)wglGetProcAddress("glGetProgramiv");
-  if (!glGetProgramiv) {
-    error_to_console("Failed to get functions.");
-  }
+  if (!glGetProgramiv) return 0;
   glGetShaderInfoLog =
       (PFNGLGETSHADERINFOLOGPROC)wglGetProcAddress("glGetShaderInfoLog");
-  if (!glGetShaderInfoLog) {
-    error_to_console("Failed to get functions.");
-  }
+  if (!glGetShaderInfoLog) return 0;
   glGetShaderiv = (PFNGLGETSHADERIVPROC)wglGetProcAddress("glGetShaderiv");
-  if (!glGetShaderiv) {
-    error_to_console("Failed to get functions.");
-  }
+  if (!glGetShaderiv) return 0;
   glLinkProgram = (PFNGLLINKPROGRAMPROC)wglGetProcAddress("glLinkProgram");
-  if (!glLinkProgram) {
-    error_to_console("Failed to get functions.");
-  }
+  if (!glLinkProgram) return 0;
   glShaderSource = (PFNGLSHADERSOURCEPROC)wglGetProcAddress("glShaderSource");
-  if (!glShaderSource) {
-    error_to_console("Failed to get functions.");
-  }
+  if (!glShaderSource) return 0;
   glUseProgram = (PFNGLUSEPROGRAMPROC)wglGetProcAddress("glUseProgram");
-  if (!glUseProgram) {
-    error_to_console("Failed to get functions.");
-  }
+  if (!glUseProgram) return 0;
   glVertexAttribPointer =
       (PFNGLVERTEXATTRIBPOINTERPROC)wglGetProcAddress("glVertexAttribPointer");
-  if (!glVertexAttribPointer) {
-    error_to_console("Failed to get functions.");
-  }
+  if (!glVertexAttribPointer) return 0;
   glBindAttribLocation =
       (PFNGLBINDATTRIBLOCATIONPROC)wglGetProcAddress("glBindAttribLocation");
-  if (!glBindAttribLocation) {
-    error_to_console("Failed to get functions.");
-  }
+  if (!glBindAttribLocation) return 0;
   glGetUniformLocation =
       (PFNGLGETUNIFORMLOCATIONPROC)wglGetProcAddress("glGetUniformLocation");
-  if (!glGetUniformLocation) {
-    error_to_console("Failed to get functions.");
-  }
+  if (!glGetUniformLocation) return 0;
   glUniformMatrix4fv =
       (PFNGLUNIFORMMATRIX4FVPROC)wglGetProcAddress("glUniformMatrix4fv");
-  if (!glUniformMatrix4fv) {
-    error_to_console("Failed to get functions.");
-  }
+  if (!glUniformMatrix4fv) return 0;
   glActiveTexture =
       (PFNGLACTIVETEXTUREPROC)wglGetProcAddress("glActiveTexture");
-  if (!glActiveTexture) {
-    error_to_console("Failed to get functions.");
-  }
+  if (!glActiveTexture) return 0;
   glUniform1i = (PFNGLUNIFORM1IPROC)wglGetProcAddress("glUniform1i");
-  if (!glUniform1i) {
-    error_to_console("Failed to get functions.");
-  }
+  if (!glUniform1i) return 0;
   glGenerateMipmap =
       (PFNGLGENERATEMIPMAPPROC)wglGetProcAddress("glGenerateMipmap");
-  if (!glGenerateMipmap) {
-    error_to_console("Failed to get functions.");
-  }
+  if (!glGenerateMipmap) return 0;
   glDisableVertexAttribArray =
       (PFNGLDISABLEVERTEXATTRIBARRAYPROC)wglGetProcAddress(
           "glDisableVertexAttribArray");
-  if (!glDisableVertexAttribArray) {
-    error_to_console("Failed to get functions.");
-  }
+  if (!glDisableVertexAttribArray) return 0;
   glUniform3fv = (PFNGLUNIFORM3FVPROC)wglGetProcAddress("glUniform3fv");
-  if (!glUniform3fv) {
-    error_to_console("Failed to get functions.");
-  }
+  if (!glUniform3fv) return 0;
   glUniform4fv = (PFNGLUNIFORM4FVPROC)wglGetProcAddress("glUniform4fv");
-  if (!glUniform4fv) {
-    error_to_console("Failed to get functions.");
-  }
+  if (!glUniform4fv) return 0;
+  return 1;
 }

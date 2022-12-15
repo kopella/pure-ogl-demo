@@ -4,7 +4,7 @@
 #include <Windows.h>
 
 /* Initialize and finalize OpenGL */
-void get_functions();
+int get_functions();
 
 HGLRC create_context(HDC h_dc);
 void delete_context(HDC h_dc, HGLRC h_rc);

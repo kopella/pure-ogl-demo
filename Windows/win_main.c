@@ -11,7 +11,9 @@ int main(int argc, char* argv[]) {
   HDC h_dc = GetDC(h_wnd);
 
   HGLRC h_rc = create_context(h_dc);
-  get_functions();
+  if (!get_functions()) {
+    error_to_console("Failed to load functions of OpenGL.");
+  }
 
   ShowWindow(h_wnd, SW_SHOW);
   UpdateWindow(h_wnd);
