@@ -1,5 +1,12 @@
 #include "ogl_func.h"
 #include "ogl_gfx.h"
+#include "utils.h"
+
+#include <string>
+#include <filesystem>
+#include <fstream>
+#include <sstream>
+#include <iostream>
 
 void draw_scene() {
   glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
@@ -14,20 +21,30 @@ void draw_scene() {
 }
 
 GLuint load_shader() {
-  const char* v_shader_src =
-      "#version 330 core\n"
-      "layout (location = 0) in vec3 aPos;\n"
-      "void main()\n"
-      "{\n"
-      "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-      "}\n\0";
-  const char* f_shader_src =
-      "#version 330 core\n"
-      "out vec4 FragColor;\n"
-      "void main()\n"
-      "{\n"
-      "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
-      "}\n\0";
+  const char* v_shader_path = "../../Assets/Shader/v_shader.glsl";
+  const char* f_shader_path = "../../Assets/Shader/f_shader.glsl";
+
+  std::string v_shader_code;
+  std::string f_shader_code;
+  std::ifstream v_shader_file;
+  std::ifstream f_shader_file;
+
+  v_shader_file.open(v_shader_path);
+  f_shader_file.open(f_shader_path);
+
+  std::stringstream v_shader_st, f_shader_st;
+
+  v_shader_st << v_shader_file.rdbuf();
+  f_shader_st << f_shader_file.rdbuf();
+
+  v_shader_file.close();
+  f_shader_file.close();
+
+  v_shader_code = v_shader_st.str();
+  f_shader_code = f_shader_st.str();
+
+  const char* v_shader_src = v_shader_code.c_str();
+  const char* f_shader_src = f_shader_code.c_str();
 
   GLuint v_shader = glCreateShader(GL_VERTEX_SHADER);
   glShaderSource(v_shader, 1, &v_shader_src, 0);
