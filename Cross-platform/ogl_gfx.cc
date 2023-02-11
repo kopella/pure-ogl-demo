@@ -90,3 +90,7 @@ GLuint load_vertex() {
 
   return v_array_obj;
 }
+
+GLuint load_texture(){
+
+}

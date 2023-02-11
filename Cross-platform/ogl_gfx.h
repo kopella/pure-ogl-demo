@@ -7,5 +7,6 @@
 void draw_scene();
 GLuint load_shader();
 GLuint load_vertex();
+GLuint load_texture();
 
 #endif
